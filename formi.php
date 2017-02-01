@@ -1,7 +1,9 @@
 <?php
 
-$enviar = filter_input(0, 'submit');
-$errorNom = ""; $errorApellidos = ""; $errorNick = ""; $errorDate = ""; $errorGenero = "";
+$enviar = filter_input(0, 'submit');//El 0 és INPUT_POST
+//$errorNom = ""; $errorApellidos = ""; $errorNick = ""; $errorDate = ""; $errorGenero = "";
+$errorNom = $errorApellidos = $errorNick = $errorDate = $errorGenero = "";
+$checkH = $checkD = "";
 //$nombre = filter_input(INPUT_POST, 'nombre');
 //$enviar = true; //True dóna per enviat el formulari
 if(isset($enviar)){
@@ -15,17 +17,17 @@ if(isset($enviar)){
     
     if($nombre === "") {
         $errorNom = $errors[0];
-    }elseif (!ctype_alpha($nombre)) {
+    }elseif (!ctype_alpha($nombre)) {//Només lletres i espais
         $errorNom = $errors[1]; 
     }
     if($apellidos === "") {
         $errorApellidos = $errors[0];
-    }elseif (!ctype_alpha($apellidos)) {
+    }elseif (!ctype_alpha($apellidos)) {//Només lletres i espais
         $errorApellidos = $errors[1]; 
     }
     if($nick === "") {
         $errorNick = $errors[0];
-    }
+    }//Pot contenir lletres i números
     if ($date === ""){
         $errorDate = $errors[0];
     }else{
@@ -57,16 +59,32 @@ if(isset($enviar)){
             $errorDate = $errors[2];//Data incorrecta
         }
     }
-    if ($genero === ""){
-        $errorGenero = $errors[0];
+    if (!$genero){//No hi ha res
+        $errorGenero = $errors[0];   
+    }else{//Deixar activat el botó seleccionat
+        switch ($genero){
+        case "home":
+            $checkH = "checked";
+            $checkD = "";
+            break;
+        case "dona":
+            $checkH = "";
+            $checkD = "checked";      
+            break;
+        default:
+            $checkH = $checkD = false;
+            break;
+        }
+            
     }
     
-}else{
+}else{//Evita errors
     $nombre = "";
     $apellidos = "";
     $nick = "";
-    //$date = "dd/mm/yyyy";
     $date = "";
+    $genero = "";
+    $checkH = $checkD = "";
 }
 
 
@@ -88,7 +106,7 @@ if(isset($enviar)){
 </head>
 
 <body>
-    <?php echo $enviar; ?>
+    <?php echo $genero; ?>
 <h2>Formulario de Registro</h2>
 <form action="formi.php" method="POST">
     
@@ -121,9 +139,9 @@ if(isset($enviar)){
             <td>
               <span>Gènere: </span>
     <label for="H"><span>H</span></label>
-    <input type="radio" name="genero" id="H" value="hombre">
+    <input type="radio" name="genero" id="H" value="home" <?php echo $checkH; ?> />
     <label for="D"><span>D</span></label>
-    <input type="radio" name="genero" id="D" value="mujer">
+    <input type="radio" name="genero" id="D" value="dona" <?php echo $checkD; ?> />
     <span><?php echo $errorGenero; ?></span>
             </td>
         </tr>
